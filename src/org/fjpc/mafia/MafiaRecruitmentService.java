@@ -89,20 +89,13 @@ public class MafiaRecruitmentService {
     public void releaseFromJail(Long gangsterId) {
         Gangster gangster = jailed.findById(gangsterId);
         jailed.remove(gangster);
-        actives.stream()
-                .filter(member -> gangster.getSubordinates()
-                        .stream()
-                        .anyMatch(subordinate -> subordinate.equals(member)))
-                .forEach(member -> {
-                    if (member.getBoss() != null) {
-                        member.getBoss().getSubordinates().remove(member);
-                    }
-                    member.setBoss(gangster);
-                    if (member.getGrade() <= gangster.getGrade()) {
-                        member.setGrade(gangster.getGrade() + 1);
-                    }
-                });
-        gangster.setSubordinates(actives.findByBoss(gangster));
+        gangster.getSubordinates().forEach(subordinate -> {
+            if (subordinate.getBoss() != null) {
+                subordinate.getBoss().getSubordinates().remove(subordinate);
+            }
+            subordinate.setBoss(gangster);
+            subordinate.setGrade(gangster.getGrade() + 1);
+        });
         if (gangster.getBoss() != null) {
             Long bossId = gangster.getBoss().getId();
             if (actives.findById(bossId) != null) {

@@ -61,4 +61,19 @@ public class Gangster {
         this.subordinates = subordinates;
     }
 
+    public Integer countAllSubordinates(GangsterList subordinates) {
+        if (subordinates.getSubordinates().size() == 0) {
+            return 0;
+        }
+        return getSubordinates().size() + countAllSubordinates(getSubordinates());
+    }
+
+    public Integer countAllSubordinates() {
+        Integer total = 0;
+        if (getSubordinates().size() == 0) {
+            return 0;
+        }
+        return getSubordinates().size() + countAllSubordinates(getSubordinates());
+    }
+
 }
